@@ -1,0 +1,39 @@
+package com.example.gym_management.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Entity ( name = "payments ")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Payment {
+
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Double amount;
+    private LocalDate paymentDate;
+    private LocalDate expirationDate;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @PrePersist
+    public void setDefaultDates() {
+        if (this.paymentDate == null) {
+            this.paymentDate = LocalDate.now();
+        }
+        if (this.expirationDate == null && this.member != null) {
+            this.expirationDate = this.member.getSignUpDate();
+        }
+    }
+
+}
