@@ -4,12 +4,15 @@ import com.example.gym_management.dto.request.MemberRequestDto;
 import com.example.gym_management.dto.response.MemberResponseDto;
 import com.example.gym_management.mapper.MemberMapper;
 import com.example.gym_management.model.Member;
+import com.example.gym_management.model.Payment;
 import com.example.gym_management.repository.MemberRepository;
+import com.example.gym_management.repository.PaymentRepository;
 import com.example.gym_management.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -18,7 +21,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
-
+    private final PaymentRepository paymentRepository;
 
     @Override
     public MemberResponseDto create(MemberRequestDto memberRequestDto) {
@@ -63,5 +66,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberResponseDto> getAllActive() {
         return List.of();
+    }
+
+    @Override
+    public List<MemberResponseDto> getAllExpiredPayments() {
+        List<Payment> expiredPayments = paymentRepository.findByExpirationDateBefore(LocalDate.now());
+
+        return expiredPayments.stream()
+                .map(Payment::getMember)
+                .distinct()
+                .map(memberMapper::toDto)
+                .toList();
     }
 }

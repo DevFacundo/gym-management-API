@@ -14,4 +14,5 @@ public interface MemberService {
     MemberResponseDto getByFirstNameAndLastName(String firstName, String lastName);
     List<MemberResponseDto> getAll();
     List<MemberResponseDto> getAllActive();
+    List<MemberResponseDto> getAllExpiredPayments();
 }

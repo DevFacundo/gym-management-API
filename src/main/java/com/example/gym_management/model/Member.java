@@ -24,8 +24,6 @@ public class Member {
     private String lastName;
     private String phoneNumber;
     private String auxiliaryPhoneNumber;
-    private Double height;
-    private Double weight;
     private Boolean active;
     private LocalDate birthDate;
     private LocalDate signUpDate;
@@ -33,13 +31,11 @@ public class Member {
     @OneToMany (mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "member_pathologies",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn (name = "pathology_id")
-    )
-    private List<Pathology> pathologies = new ArrayList<>();
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private HealthRecord healthRecord;
+
+    @ManyToMany(mappedBy = "members")
+    private List<ClassSchedule> classSchedules = new ArrayList<>();
 
     @PrePersist
     public void onCreate() {

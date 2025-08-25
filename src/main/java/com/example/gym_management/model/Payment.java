@@ -26,13 +26,17 @@ public class Payment {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "membership_plan_id")
+    private MembershipPlan membershipPlan;
+
     @PrePersist
     public void setDefaultDates() {
         if (this.paymentDate == null) {
             this.paymentDate = LocalDate.now();
         }
         if (this.expirationDate == null && this.member != null) {
-            this.expirationDate = this.member.getSignUpDate();
+            this.expirationDate = this.paymentDate.plusMonths(1);
         }
     }
 

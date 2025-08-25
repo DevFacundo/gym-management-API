@@ -7,24 +7,23 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record MemberRequestDto(
-    @NotBlank(message = "Se debe ingresar un nombre")
+    @NotBlank(message = "name is required")
     @Size(min = 2, max=20)
      String firstName,
 
-    @NotBlank(message = "Se debe ingresar un apellido")
+    @NotBlank(message = "lastname is required")
     @Size(min = 2, max=20)
      String lastName,
 
-    @NotBlank(message = "Se debe ingresar un numero de celular")
+    @NotBlank(message = "phone number is required")
     @Size(min = 9, max=20)
      String phoneNumber,
 
     String auxiliaryPhoneNumber,
-    Double height,
-    Double weight,
     LocalDate birthDate,
     LocalDate signUpDate,
     List<Long> paymentsId,
+    //quitar ->
     List<Long> pathologiesId
 ) {
 }
