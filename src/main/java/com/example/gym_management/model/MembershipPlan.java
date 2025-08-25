@@ -1,5 +1,6 @@
 package com.example.gym_management.model;
 
+import com.example.gym_management.enums.PlanName;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,6 @@ public class MembershipPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;  // OncePerWeek, TwicePerWeek , ThreeTimesPerWeek
+    private PlanName planName;  // OncePerWeek, TwicePerWeek , ThreeTimesPerWeek
     private BigDecimal price;
 }
