@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record PathologyRequestDto(
 
-    @NotBlank (message = "Se debe ingresar un nombre de Patologia")
+    @NotBlank (message = "name pathology is required")
     String name,
     String description
 

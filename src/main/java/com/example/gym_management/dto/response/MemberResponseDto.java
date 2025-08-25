@@ -9,12 +9,11 @@ public record MemberResponseDto(
         String lastName,
         String phoneNumber,
         String auxiliaryPhoneNumber,
-        Double height,
-        Double weight,
         Boolean active,
         LocalDate birthDate,
         LocalDate signUpDate,
-        List<PaymentResponseDto> payments,
-        List<PathologyResponseDto> pathologies
+        HealthRecordResponseDto healthRecord,
+        List<ClassScheduleResponseDto> classSchedule,
+        List<PaymentResponseDto> payments
 ) {
 }
