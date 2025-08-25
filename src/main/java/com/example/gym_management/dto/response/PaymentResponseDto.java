@@ -7,6 +7,7 @@ public record PaymentResponseDto(
         Double amount,
         LocalDate paymentDate,
         LocalDate expirationDate,
-        Long memberId
+        Long memberId,
+        Long membershipPlanId
 ) {
 }

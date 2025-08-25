@@ -6,13 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record PaymentRequestDto(
-    @NotNull
     @Min(value =0, message = "El monto abonado debe ser mayor a 0" )
     Double amount,
-
     LocalDate paymentDate,
     @NotNull
-    Long memberId
-
+    Long memberId,
+    @NotNull
+    Long membershipPlanId
 ) {
 }

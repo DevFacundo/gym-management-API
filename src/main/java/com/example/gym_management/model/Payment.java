@@ -38,6 +38,9 @@ public class Payment {
         if (this.expirationDate == null && this.member != null) {
             this.expirationDate = this.paymentDate.plusMonths(1);
         }
+        if (this.amount == null && this.membershipPlan != null) {
+            this.amount = this.membershipPlan.getPrice().doubleValue();
+        }
     }
 
 }

@@ -22,8 +22,7 @@ public record MemberRequestDto(
     String auxiliaryPhoneNumber,
     LocalDate birthDate,
     LocalDate signUpDate,
-    List<Long> paymentsId,
-    //quitar ->
-    List<Long> pathologiesId
+    HealthRecordRequestDto healthRecord,
+    List<Long> classScheduleId
 ) {
 }
