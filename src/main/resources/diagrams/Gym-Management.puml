@@ -1,0 +1,47 @@
+@startuml
+class Member{
+firstName: String
+lastName: String
+phoneNumber: String
+auxiliaryPhoneNumber: String
+birthDate: LocalDate
+signUpDate: LocalDate
+
+}
+class MembershipPlan{
+planName: PlanName
+price: BigDecimal
+}
+class ClassSchedule{
+day:DayOfWeek
+startTime: LocalDate
+endTime: LocalDate
+maxCapacity: Integer
+}
+class Pathology{
+name: String
+description: String
+}
+
+class Payment{
+amount: Double
+paymentDate: LocalDate
+expirationDate:LocalDate
+
+}
+class HealthRecord{
+height: Double
+weight: Double
+}
+enum PlanName {
+      ONCE_PER_WEEK
+      TWICE_PER_WEEK
+      THREE_TIMES_PER_WEEK
+      FOUR_TIMES_PER_WEEK
+    }
+Member "1" <-down-> "1..*" Payment : has
+Member "1..*" <-down-> "1..*" ClassSchedule : has
+Member "1" <-left-> "1" HealthRecord : has
+HealthRecord "1..*" <-down-> "1..*" Pathology : has
+MembershipPlan "1" <-down-> "1..*" Payment : has
+@enduml

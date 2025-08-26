@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity ( name = "payments ")
@@ -18,7 +19,7 @@ public class Payment {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double amount;
+    private BigDecimal amount;
     private LocalDate paymentDate;
     private LocalDate expirationDate;
 
@@ -39,7 +40,7 @@ public class Payment {
             this.expirationDate = this.paymentDate.plusMonths(1);
         }
         if (this.amount == null && this.membershipPlan != null) {
-            this.amount = this.membershipPlan.getPrice().doubleValue();
+            this.amount = this.membershipPlan.getPrice();
         }
     }
 

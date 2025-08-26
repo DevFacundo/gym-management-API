@@ -7,6 +7,6 @@ import java.util.List;
 public record HealthRecordRequestDto(
         @NotNull Double height,
         @NotNull Double weight,
-        List<Long> pathologyIds
+        List<Long> pathologyId
 ) {
 }

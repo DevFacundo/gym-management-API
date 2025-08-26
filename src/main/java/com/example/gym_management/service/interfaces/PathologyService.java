@@ -1,4 +1,4 @@
-package com.example.gym_management.service;
+package com.example.gym_management.service.interfaces;
 
 import com.example.gym_management.dto.request.PathologyRequestDto;
 import com.example.gym_management.dto.response.PathologyResponseDto;

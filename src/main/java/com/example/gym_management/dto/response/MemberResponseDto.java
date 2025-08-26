@@ -13,7 +13,6 @@ public record MemberResponseDto(
         LocalDate birthDate,
         LocalDate signUpDate,
         HealthRecordResponseDto healthRecord,
-        List<ClassScheduleResponseDto> classSchedule,
-        List<PaymentResponseDto> payments
+        List<ClassScheduleResponseDto> classSchedule
 ) {
 }
