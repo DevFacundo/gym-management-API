@@ -45,6 +45,7 @@ public class ClassScheduleServiceImpl implements ClassScheduleService {
     }
 
     @Override
+    @Transactional
     public List<ClassScheduleResponseDto> getAll() {
         return classScheduleRepository.findAll()
                 .stream()
@@ -61,6 +62,7 @@ public class ClassScheduleServiceImpl implements ClassScheduleService {
     }
 
     @Override
+    @Transactional
     public ClassScheduleResponseDto getById(Long id) {
         ClassSchedule entity = classScheduleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("ClassSchedule not found"));
@@ -68,6 +70,7 @@ public class ClassScheduleServiceImpl implements ClassScheduleService {
     }
 
     @Override
+    @Transactional
     public List<MemberResponseDto> getAllMembersByClassScheduleId(Long classScheduleId) {
         ClassSchedule classSchedule = classScheduleRepository.findById(classScheduleId)
                 .orElseThrow(() -> new EntityNotFoundException("ClassSchedule not found"));

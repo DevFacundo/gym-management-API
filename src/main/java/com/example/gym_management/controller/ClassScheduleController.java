@@ -6,7 +6,9 @@ import com.example.gym_management.dto.response.ClassScheduleResponseDto;
 import com.example.gym_management.dto.response.MemberResponseDto;
 import com.example.gym_management.service.interfaces.ClassScheduleService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +16,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiPaths.CLASS_SCHEDULE_BASE)
-@RequiredArgsConstructor
+
 public class ClassScheduleController {
 
     private final ClassScheduleService classScheduleService;
+    @Autowired
+    public ClassScheduleController(ClassScheduleService classScheduleService) {
+        this.classScheduleService = classScheduleService;
+    }
 
     @PostMapping
     public ResponseEntity<ClassScheduleResponseDto> create(@RequestBody @Valid ClassScheduleRequestDto dto) {
@@ -43,7 +49,7 @@ public class ClassScheduleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         classScheduleService.delete(id);
-        return ResponseEntity.noContent().build(); // 204 si elimina; tu handler devolverá 404 si no existe
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/members")
