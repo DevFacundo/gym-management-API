@@ -20,6 +20,8 @@ public class Member {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @EqualsAndHashCode.Include
+    private String dni;
     private String firstName;
     private String lastName;
     private String phoneNumber;

@@ -169,4 +169,11 @@ public class MemberServiceImpl implements MemberService {
                 ))
                 .toList();
     }
+
+    @Override
+    public MemberResponseDto getByDni(String dni) {
+        return memberRepository.findByDni(dni)
+                .map(memberMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+    }
 }

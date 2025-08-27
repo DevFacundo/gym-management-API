@@ -17,4 +17,5 @@ public interface MemberService {
     List<MemberResponseDto> getAllActive();
     List<MemberResponseDto> getAllExpiredPayments();
     List<PaymentResponseDto> getAllPaymentsByMemberId(Long memberId);
+    MemberResponseDto getByDni(String dni);
 }

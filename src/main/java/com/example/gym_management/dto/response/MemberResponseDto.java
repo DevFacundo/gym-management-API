@@ -5,6 +5,7 @@ import java.util.List;
 
 public record MemberResponseDto(
         Long id,
+        String dni,
         String firstName,
         String lastName,
         String phoneNumber,
