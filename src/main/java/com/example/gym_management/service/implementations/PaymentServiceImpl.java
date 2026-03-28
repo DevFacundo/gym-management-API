@@ -30,25 +30,22 @@ public class PaymentServiceImpl implements PaymentService {
     private final MembershipPlanRepository membershipPlanRepository;
 
     @Override
-    public PaymentResponseDto create(PaymentRequestDto paymentRequestDto) {
-        Member member = memberRepository.findById(paymentRequestDto.memberId())
+    public PaymentResponseDto create(PaymentRequestDto dto) {
+        Member member = memberRepository.findById(dto.memberId())
                 .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
-        MembershipPlan plan = membershipPlanRepository.findById(paymentRequestDto.membershipPlanId())
+        MembershipPlan plan = membershipPlanRepository.findById(dto.membershipPlanId())
                 .orElseThrow(() -> new EntityNotFoundException("MembershipPlan not found"));
-
 
         Payment payment = new Payment();
         payment.setMember(member);
         payment.setMembershipPlan(plan);
-        payment.setAmount(paymentRequestDto.amount() != null ? paymentRequestDto.amount() : plan.getPrice());
-        payment.setPaymentDate(paymentRequestDto.paymentDate() != null ? paymentRequestDto.paymentDate() : LocalDate.now());
-
+        payment.setAmount(dto.amount() != null ? dto.amount() : plan.getPrice());
+        payment.setPaymentDate(dto.paymentDate() != null ? dto.paymentDate() : LocalDate.now());
         payment.setExpirationDate(payment.getPaymentDate().plusMonths(1));
 
         return paymentMapper.toDto(paymentRepository.save(payment));
     }
-
 
     @Override
     @Transactional
@@ -74,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (dto.amount() != null) entity.setAmount(dto.amount());
         if (dto.paymentDate() != null) {
             entity.setPaymentDate(dto.paymentDate());
-            entity.setExpirationDate(entity.getPaymentDate().plusMonths(1));
+            entity.setExpirationDate(dto.paymentDate().plusMonths(1));
         }
 
         return paymentMapper.toDto(paymentRepository.save(entity));
@@ -82,9 +79,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponseDto getById(Long id) {
-        Payment entity = paymentRepository.findById(id)
+        return paymentRepository.findById(id)
+                .map(paymentMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Payment not found"));
-        return paymentMapper.toDto(entity);
     }
 
     @Override
@@ -115,14 +112,13 @@ public class PaymentServiceImpl implements PaymentService {
                 .map(paymentMapper::toDto)
                 .toList();
     }
+
     @Override
     public BigDecimal calculateEarningsForMonth(Integer year, Integer month) {
-        LocalDate startDate = LocalDate.of(year, month, 1);
-        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
-
-        return paymentRepository.findByPaymentDateBetween(startDate,endDate)
-                .stream()
-                .map(Payment::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+        // Query optimizada: suma en DB, no trae objetos a memoria
+        return paymentRepository.sumAmountByPaymentDateBetween(start, end)
+                .orElse(BigDecimal.ZERO);
     }
 }
