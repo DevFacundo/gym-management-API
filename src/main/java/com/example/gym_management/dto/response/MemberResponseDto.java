@@ -8,6 +8,7 @@ public record MemberResponseDto(
         String dni,
         String firstName,
         String lastName,
+        String email,
         String phoneNumber,
         String auxiliaryPhoneNumber,
         Boolean active,

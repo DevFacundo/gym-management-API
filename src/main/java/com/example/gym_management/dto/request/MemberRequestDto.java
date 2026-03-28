@@ -16,6 +16,8 @@ public record MemberRequestDto(
     @Size(min = 2, max=20)
      String lastName,
 
+    String email,
+
     @NotBlank(message = "phone number is required")
     @Size(min = 9, max=20)
      String phoneNumber,

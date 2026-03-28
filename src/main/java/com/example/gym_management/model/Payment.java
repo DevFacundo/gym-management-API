@@ -1,5 +1,6 @@
 package com.example.gym_management.model;
 
+import com.example.gym_management.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,11 @@ public class Payment {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
     private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private PaymentStatus status = PaymentStatus.PENDING;
+
     private LocalDate paymentDate;
     private LocalDate expirationDate;
 

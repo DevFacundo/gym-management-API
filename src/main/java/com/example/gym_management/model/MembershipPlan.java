@@ -22,7 +22,9 @@ public class MembershipPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String description;
+    private Integer sessionsPerWeek;
+    private Integer durationDays;
     private PlanName planName;  // OncePerWeek, TwicePerWeek , ThreeTimesPerWeek
     private BigDecimal price;
 }

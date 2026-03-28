@@ -22,4 +22,6 @@ public class Pathology {
     private Long id;
     private String name;
     private String description;
+    private String severity;        // "LEVE", "MODERADA", "SEVERA"
+    private String recommendations;
 }

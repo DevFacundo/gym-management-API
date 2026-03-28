@@ -50,6 +50,7 @@ public class MemberServiceImpl implements MemberService {
 
     private void updateBasicInfo(Member member, MemberRequestDto dto) {
         member.setFirstName(dto.firstName());
+        member.setEmail(dto.email());
         member.setLastName(dto.lastName());
         member.setPhoneNumber(dto.phoneNumber());
         member.setAuxiliaryPhoneNumber(dto.auxiliaryPhoneNumber());

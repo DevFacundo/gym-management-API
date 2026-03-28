@@ -25,6 +25,7 @@ public class Member {
 
     @EqualsAndHashCode.Include
     private String dni;
+    private String email;
     private String firstName;
     private String lastName;
     private String phoneNumber;

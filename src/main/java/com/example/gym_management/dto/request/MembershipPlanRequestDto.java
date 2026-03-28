@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public record MembershipPlanRequestDto(
-        @NotBlank(message = "name of membership plan is required")
+        @NotNull(message = "name of membership plan is required")
         PlanName planName,
         @NotNull(message = "price is required")
         @DecimalMin(value = "0.0", inclusive = true, message = "price must be greater than or equal to 0")

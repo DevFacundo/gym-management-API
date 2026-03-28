@@ -64,7 +64,7 @@ public class MemberController {
         List<PaymentResponseDto> payments = memberService.getAllPaymentsByMemberId(memberId);
         return ResponseEntity.ok(payments);
     }
-    @GetMapping ("/{dni}")
+    @GetMapping ("by-dni/{dni}")
     public ResponseEntity<MemberResponseDto> getByDni(@PathVariable String dni) {
         return ResponseEntity.ok(memberService.getByDni(dni));
     }
