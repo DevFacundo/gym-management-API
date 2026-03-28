@@ -7,17 +7,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "members")
-@Getter
-@Setter
+@Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(indexes = {
+        @Index(name = "idx_member_firstname", columnList = "firstName"),
+        @Index(name = "idx_member_lastname", columnList = "lastName"),
+        @Index(name = "idx_member_active", columnList = "active")
+})
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     private Long id;
 
     @EqualsAndHashCode.Include

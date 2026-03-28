@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Entity ( name = "payments")
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,5 +43,4 @@ public class Payment {
             this.amount = this.membershipPlan.getPrice();
         }
     }
-
 }
