@@ -1,4 +1,10 @@
 package com.example.gym_management.dto.request;
 
-public record HealthRecordRequestDto() {
+import java.util.List;
+
+public record HealthRecordRequestDto(
+        Double height,
+        Double weight,
+        List<Long> pathologyIds
+) {
 }

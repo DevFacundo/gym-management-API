@@ -8,18 +8,26 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Entity ( name = "payments ")
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "payments", indexes = {
+        @Index(name = "idx_payment_member", columnList = "member_id"),
+        @Index(name = "idx_payment_expiration", columnList = "expirationDate"),
+        @Index(name = "idx_payment_date", columnList = "paymentDate")
+})
 public class Payment {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Double amount;
+
     private LocalDate paymentDate;
+
     private LocalDate expirationDate;
 
     @ManyToOne

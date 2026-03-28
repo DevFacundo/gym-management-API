@@ -2,6 +2,7 @@ package com.example.gym_management.service.impl;
 
 import com.example.gym_management.dto.request.MemberRequestDto;
 import com.example.gym_management.dto.response.MemberResponseDto;
+import com.example.gym_management.exception.ResourceNotFoundException;
 import com.example.gym_management.mapper.MemberMapper;
 import com.example.gym_management.model.Member;
 import com.example.gym_management.model.Payment;
@@ -26,53 +27,72 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto create(MemberRequestDto memberRequestDto) {
         Member member = memberMapper.toEntity(memberRequestDto);
-
-
-
         return memberMapper.toDto(memberRepository.save(member));
     }
 
     @Override
     @Transactional
-    public MemberResponseDto update(Long id, MemberRequestDto memberRequestDto) {
-        return null;
+    public MemberResponseDto update(Long id, MemberRequestDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Member", id));
+
+        member.setFirstName(dto.firstName());
+        member.setLastName(dto.lastName());
+        member.setPhoneNumber(dto.phoneNumber());
+        member.setAuxiliaryPhoneNumber(dto.auxiliaryPhoneNumber());
+        member.setBirthDate(dto.birthDate());
+
+        return memberMapper.toDto(memberRepository.save(member));
     }
 
     @Override
     public void delete(Long id) {
-
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Member", id));
+        memberRepository.delete(member);
     }
 
     @Override
     public MemberResponseDto geyById(Long id) {
-        return null;
+        return memberRepository.findById(id)
+                .map(memberMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Member", id));
     }
 
     @Override
     public MemberResponseDto getByFirstName(String firstName) {
-        return null;
+        return memberRepository.findByFirstName(firstName)
+                .map(memberMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Member con nombre "+ firstName + " no encontrado"));
     }
 
     @Override
     public MemberResponseDto getByFirstNameAndLastName(String firstName, String lastName) {
-        return null;
+        return  memberRepository.findByFirstNameAndLastName(firstName, lastName)
+                .map(memberMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Member con nombre "+ firstName + "y apellido " +lastName + " no encontrado") );
     }
 
     @Override
     public List<MemberResponseDto> getAll() {
-        return List.of();
+        return memberRepository.findAll()
+                .stream()
+                .map(memberMapper::toDto)
+                .toList();
     }
 
     @Override
     public List<MemberResponseDto> getAllActive() {
-        return List.of();
+        return memberRepository.findByActive(true)
+                .stream()
+                .map(memberMapper::toDto)
+                .toList();
     }
 
     @Override
     public List<MemberResponseDto> getAllExpiredPayments() {
-        List<Payment> expiredPayments = paymentRepository.findByExpirationDateBefore(LocalDate.now());
-
-        return expiredPayments.stream()
+        return paymentRepository.findExpiredPaymentsOfActiveMembers(LocalDate.now())
+                .stream()
                 .map(Payment::getMember)
                 .distinct()
                 .map(memberMapper::toDto)

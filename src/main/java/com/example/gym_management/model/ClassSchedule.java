@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "class_schedules")
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

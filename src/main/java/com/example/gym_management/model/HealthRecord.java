@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "health_records")
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

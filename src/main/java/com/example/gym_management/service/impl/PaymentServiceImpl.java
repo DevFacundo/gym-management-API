@@ -2,8 +2,11 @@ package com.example.gym_management.service.impl;
 
 import com.example.gym_management.dto.request.PaymentRequestDto;
 import com.example.gym_management.dto.response.PaymentResponseDto;
+import com.example.gym_management.exception.ResourceNotFoundException;
 import com.example.gym_management.mapper.PaymentMapper;
+import com.example.gym_management.model.Member;
 import com.example.gym_management.model.Payment;
+import com.example.gym_management.repository.MemberRepository;
 import com.example.gym_management.repository.PaymentRepository;
 import com.example.gym_management.service.PaymentService;
 import jakarta.transaction.Transactional;
@@ -18,41 +21,75 @@ import java.util.List;
 public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final MemberRepository memberRepository;
 
     @Override
     public PaymentResponseDto create(PaymentRequestDto paymentRequestDto) {
-        return null;
+        Member member = memberRepository.findById(paymentRequestDto.memberId())
+                .orElseThrow(() -> new ResourceNotFoundException("Member", paymentRequestDto.memberId()));
+
+        Payment payment = Payment.builder()
+                .amount(paymentRequestDto.amount())
+                .paymentDate(paymentRequestDto.paymentDate())
+                .member(member)
+                .build();
+
+        payment.setDefaultDates();
+
+        return paymentMapper.toDto(paymentRepository.save(payment));
     }
 
     @Override
     @Transactional
     public PaymentResponseDto update(Long id, PaymentRequestDto paymentRequestDto) {
-        return null;
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", id));
+
+        payment.setAmount(paymentRequestDto.amount());
+        if (paymentRequestDto.paymentDate() != null) {
+            payment.setPaymentDate(paymentRequestDto.paymentDate());
+            payment.setExpirationDate(paymentRequestDto.paymentDate().plusMonths(1));
+        }
+
+        return paymentMapper.toDto(paymentRepository.save(payment));
     }
 
     @Override
     public PaymentResponseDto getById(Long id) {
-        return null;
+        return paymentRepository.findById(id)
+                .map(paymentMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", id));
     }
 
     @Override
     public void delete(Long id) {
-
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", id));
+        paymentRepository.delete(payment);
     }
 
     @Override
     public List<PaymentResponseDto> getAllByMemberId(Long memberId) {
-        return List.of();
+        return paymentRepository.findByMemberId(memberId)
+                .stream()
+                .map(paymentMapper::toDto)
+                .toList();
     }
 
     @Override
     public List<PaymentResponseDto> getByPaymentDateBetween(LocalDate startDate, LocalDate endDate) {
-        return List.of();
+        return paymentRepository.findByPaymentDateBetween(startDate, endDate)
+                .stream()
+                .map(paymentMapper::toDto)
+                .toList();
     }
 
     @Override
-    public List<PaymentResponseDto> getByExpirationDateBefore(LocalDate endDate) {
-        return List.of();
+    public List<PaymentResponseDto> getByExpirationDateBefore(LocalDate date) {
+        return paymentRepository.findByExpirationDateBefore(date)
+                .stream()
+                .map(paymentMapper::toDto)
+                .toList();
     }
 
     @Override
@@ -60,9 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-        return paymentRepository.findByPaymentDateBetween(startDate,endDate)
-                .stream()
-                .mapToDouble(Payment::getAmount)
-                .sum();
+        return paymentRepository.sumAmountByPaymentDateBetween(startDate, endDate)
+                .orElse(0.0);
     }
 }
