@@ -27,7 +27,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         HealthRecord healthRecord = healthRecordMapper.toEntity(healthRecordRequestDto);
 
         if (healthRecordRequestDto.pathologyId() != null && !healthRecordRequestDto.pathologyId().isEmpty()) {
-            healthRecord.setPathologies(pathologyRepository.findAllById(healthRecordRequestDto.pathologyId()));
+            healthRecord.setPathologies(pathologyRepository.findAllByIdIn(healthRecordRequestDto.pathologyId()));
         }
 
         return healthRecordMapper.toDto(healthRecordRepository.save(healthRecord));
@@ -42,7 +42,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         if (dto.height() != null) entity.setHeight(dto.height());
         if (dto.weight() != null) entity.setWeight(dto.weight());
         if (dto.pathologyId() != null) {
-            entity.setPathologies(pathologyRepository.findAllById(dto.pathologyId()));
+            entity.setPathologies(pathologyRepository.findAllByIdIn(dto.pathologyId()));
         }
 
         return healthRecordMapper.toDto(healthRecordRepository.save(entity));

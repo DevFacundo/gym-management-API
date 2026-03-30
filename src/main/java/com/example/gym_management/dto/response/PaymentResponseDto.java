@@ -9,6 +9,7 @@ public record PaymentResponseDto(
         LocalDate paymentDate,
         LocalDate expirationDate,
         Long memberId,
+        String memberName,
         Long membershipPlanId
 ) {
 }

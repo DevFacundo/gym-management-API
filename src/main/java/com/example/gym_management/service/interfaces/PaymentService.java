@@ -16,5 +16,6 @@ public interface PaymentService {
     List<PaymentResponseDto> getByPaymentDateBetween(LocalDate startDate, LocalDate endDate);
     List<PaymentResponseDto> getByExpirationDateBefore(LocalDate endDate);
     BigDecimal calculateEarningsForMonth(Integer year, Integer month);
-
-}
+    List<PaymentResponseDto> getAll();
+    List<PaymentResponseDto> getLatestPaymentsPerMember();
+    }

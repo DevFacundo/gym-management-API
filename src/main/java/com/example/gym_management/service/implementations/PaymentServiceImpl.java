@@ -92,6 +92,14 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.deleteById(id);
     }
 
+    @Transactional
+    public List<PaymentResponseDto> getAll()
+    {
+        return paymentRepository.findAll()
+                .stream().map(paymentMapper::toDto)
+                .toList();
+    }
+
     @Override
     public List<PaymentResponseDto> getAllByMemberId(Long memberId) {
         return paymentRepository.findByMemberId(memberId).stream()
@@ -120,5 +128,14 @@ public class PaymentServiceImpl implements PaymentService {
         // Query optimizada: suma en DB, no trae objetos a memoria
         return paymentRepository.sumAmountByPaymentDateBetween(start, end)
                 .orElse(BigDecimal.ZERO);
+    }
+
+    @Override
+    @Transactional // Importante para cargar la relación Member si es Lazy
+    public List<PaymentResponseDto> getLatestPaymentsPerMember() {
+        return paymentRepository.findLatestPaymentsPerMember()
+                .stream()
+                .map(paymentMapper::toDto)
+                .toList();
     }
 }

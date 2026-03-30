@@ -18,6 +18,16 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT p FROM Payment p JOIN p.member m WHERE p.expirationDate < :date AND m.active = true")
     List<Payment> findExpiredPaymentsOfActiveMembers(@Param("date") LocalDate date);
 
+    @Query("""
+    SELECT p FROM Payment p 
+    WHERE p.expirationDate = (
+        SELECT MAX(p2.expirationDate) 
+        FROM Payment p2 
+        WHERE p2.member.id = p.member.id
+    )
+""")
+    List<Payment> findLatestPaymentsPerMember();
+
     @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.paymentDate BETWEEN :start AND :end")
     Optional<BigDecimal> sumAmountByPaymentDateBetween(@Param("start") LocalDate start, @Param("end") LocalDate end);
 

@@ -5,7 +5,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -40,8 +42,17 @@ public class Member {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private HealthRecord healthRecord;
 
-    @ManyToMany(mappedBy = "members")
-    private List<ClassSchedule> classSchedules = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "member_class_schedules",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_schedule_id"),
+            uniqueConstraints = @UniqueConstraint(
+                    name = "UniqueMemberAndSchedule",
+                    columnNames = {"member_id", "class_schedule_id"}
+            )
+    )
+    private Set<ClassSchedule> classSchedules = new HashSet<>();
 
     @PrePersist
     public void onCreate() {

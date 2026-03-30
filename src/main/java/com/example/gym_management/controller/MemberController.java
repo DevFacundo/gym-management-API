@@ -2,6 +2,7 @@ package com.example.gym_management.controller;
 
 import com.example.gym_management.config.ApiPaths;
 import com.example.gym_management.dto.request.MemberRequestDto;
+import com.example.gym_management.dto.response.DebtResponseDto;
 import com.example.gym_management.dto.response.MemberResponseDto;
 import com.example.gym_management.dto.response.PaymentResponseDto;
 import com.example.gym_management.service.interfaces.MemberService;
@@ -48,7 +49,7 @@ public class MemberController {
     }
 
     @GetMapping("/expired")
-    public ResponseEntity<List<MemberResponseDto>> getAllExpiredPayments() {
+    public ResponseEntity<List<DebtResponseDto>> getAllExpiredPayments() {
         return ResponseEntity.ok(memberService.getAllExpiredPayments());
     }
 

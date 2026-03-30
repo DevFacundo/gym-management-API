@@ -1,6 +1,7 @@
 package com.example.gym_management.service.interfaces;
 
 import com.example.gym_management.dto.request.MemberRequestDto;
+import com.example.gym_management.dto.response.DebtResponseDto;
 import com.example.gym_management.dto.response.MemberResponseDto;
 import com.example.gym_management.dto.response.PaymentResponseDto;
 
@@ -15,7 +16,7 @@ public interface MemberService {
     MemberResponseDto getByFirstNameAndLastName(String firstName, String lastName);
     List<MemberResponseDto> getAll();
     List<MemberResponseDto> getAllActive();
-    List<MemberResponseDto> getAllExpiredPayments();
+    List<DebtResponseDto> getAllExpiredPayments();
     List<PaymentResponseDto> getAllPaymentsByMemberId(Long memberId);
     MemberResponseDto getByDni(String dni);
 }

@@ -9,6 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel="spring")
 public interface ClassScheduleMapper {
     ClassSchedule toEntity (ClassScheduleRequestDto classScheduleRequestDto);
-    @Mapping(target = "memberIds", expression = "java(classSchedule.getMembers().stream().map(m -> m.getId()).distinct().toList())")
+    @Mapping(target = "memberIds", expression = "java(classSchedule.getMembers() == null ? java.util.Collections.emptyList() : classSchedule.getMembers().stream().map(m -> m.getId()).distinct().toList())")
     ClassScheduleResponseDto toDto (ClassSchedule classSchedule);
 }

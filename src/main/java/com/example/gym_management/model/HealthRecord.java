@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -33,5 +35,5 @@ public class HealthRecord {
             joinColumns = @JoinColumn(name = "health_record_id"),
             inverseJoinColumns = @JoinColumn(name = "pathology_id")
     )
-    private List<Pathology> pathologies = new ArrayList<>();
+    private Set<Pathology> pathologies = new HashSet<>();
 }

@@ -12,7 +12,6 @@ public record PaymentRequestDto(
     LocalDate paymentDate,
     @NotNull
     Long memberId,
-    @NotNull
     Long membershipPlanId
 ) {
 }

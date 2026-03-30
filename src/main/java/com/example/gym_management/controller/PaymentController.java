@@ -2,7 +2,9 @@ package com.example.gym_management.controller;
 
 import com.example.gym_management.config.ApiPaths;
 import com.example.gym_management.dto.request.PaymentRequestDto;
+import com.example.gym_management.dto.response.DebtResponseDto;
 import com.example.gym_management.dto.response.PaymentResponseDto;
+import com.example.gym_management.service.interfaces.MemberService;
 import com.example.gym_management.service.interfaces.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,19 @@ public class PaymentController {
 
 
     private final PaymentService paymentService;
+    private final MemberService memberService;
 
     @PostMapping
     public ResponseEntity<PaymentResponseDto> create(@RequestBody @Valid PaymentRequestDto dto) {
         return ResponseEntity.ok(paymentService.create(dto));
     }
+
+
+    @GetMapping
+    public ResponseEntity<List<PaymentResponseDto>> getAll(){
+        return ResponseEntity.ok(paymentService.getAll());
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<PaymentResponseDto> update(@PathVariable Long id,
@@ -68,5 +78,16 @@ public class PaymentController {
     public ResponseEntity<BigDecimal> calculateEarningsForMonth(@RequestParam Integer year,
                                                                 @RequestParam Integer month) {
         return ResponseEntity.ok(paymentService.calculateEarningsForMonth(year, month));
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<List<PaymentResponseDto>> getLatestPaymentsPerMember() {
+        return ResponseEntity.ok(paymentService.getLatestPaymentsPerMember());
+    }
+
+    @GetMapping("/debts")
+    public ResponseEntity<List<DebtResponseDto>> getDetailedDebts() {
+        // Usamos el servicio de miembros que es el que tiene la lógica de cálculo
+        return ResponseEntity.ok(memberService.getAllExpiredPayments());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.gym_management.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,12 +33,13 @@ public class ClassSchedule {
     @Builder.Default
     private int maxCapacity = 6;
 
+    @Builder.Default
     @ManyToMany
+    @JsonIgnoreProperties("classSchedules")
     @JoinTable(
             name = "member_class_schedules",
             joinColumns = @JoinColumn(name = "class_schedule_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
-
     private List<Member> members = new ArrayList<>();
 }
