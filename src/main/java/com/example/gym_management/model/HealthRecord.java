@@ -1,10 +1,7 @@
 package com.example.gym_management.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,13 +24,17 @@ public class HealthRecord {
 
     @OneToOne
     @JoinColumn(name = "member_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Member member;
 
-    @ManyToMany
-    @JoinTable(
-            name = "healthrecord_pathologies",
-            joinColumns = @JoinColumn(name = "health_record_id"),
-            inverseJoinColumns = @JoinColumn(name = "pathology_id")
-    )
-    private Set<Pathology> pathologies = new HashSet<>();
+    @OneToMany(mappedBy = "healthRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("date DESC")
+    @Builder.Default
+    private List<Pathology> pathologies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "healthRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("date DESC")
+    @Builder.Default
+    private List<WeightRecord> weightRecords = new ArrayList<>();
 }

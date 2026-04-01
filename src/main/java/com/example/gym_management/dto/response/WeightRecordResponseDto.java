@@ -2,11 +2,9 @@ package com.example.gym_management.dto.response;
 
 import java.time.LocalDate;
 
-public record PathologyResponseDto(
+public record WeightRecordResponseDto(
         Long id,
-        String name,
-        String notes,
+        Double weight,
+        Double height,
         LocalDate date,
-        Boolean active
-) {
-}
+        String notes) {}

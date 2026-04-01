@@ -29,24 +29,22 @@ public class PathologyController {
         return ResponseEntity.ok(pathologyService.update(id, dto));
     }
 
-    @GetMapping
-    public ResponseEntity<List<PathologyResponseDto>> getAll() {
-        return ResponseEntity.ok(pathologyService.getAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<PathologyResponseDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(pathologyService.getById(id));
-    }
-
-    @GetMapping("/by-name")
-    public ResponseEntity<PathologyResponseDto> getByName(@RequestParam String name) {
-        return ResponseEntity.ok(pathologyService.getByName(name));
+    // PATCH para activar/desactivar sin mandar el body completo
+    @PatchMapping("/{id}/toggle-active")
+    public ResponseEntity<PathologyResponseDto> toggleActive(@PathVariable Long id) {
+        return ResponseEntity.ok(pathologyService.toggleActive(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         pathologyService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Útil para cargar patologías de un alumno específico sin ir por Member
+    @GetMapping("/by-health-record/{healthRecordId}")
+    public ResponseEntity<List<PathologyResponseDto>> getByHealthRecord(
+            @PathVariable Long healthRecordId) {
+        return ResponseEntity.ok(pathologyService.getByHealthRecordId(healthRecordId));
     }
 }

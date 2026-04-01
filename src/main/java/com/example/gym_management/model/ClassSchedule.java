@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -34,12 +36,7 @@ public class ClassSchedule {
     private int maxCapacity = 6;
 
     @Builder.Default
-    @ManyToMany
+    @ManyToMany(mappedBy = "classSchedules")
     @JsonIgnoreProperties("classSchedules")
-    @JoinTable(
-            name = "member_class_schedules",
-            joinColumns = @JoinColumn(name = "class_schedule_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private List<Member> members = new ArrayList<>();
+    private Set<Member> members = new HashSet<>();
 }

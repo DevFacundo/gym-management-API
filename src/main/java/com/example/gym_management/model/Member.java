@@ -61,4 +61,14 @@ public class Member {
             this.signUpDate = LocalDate.now();
         }
     }
+    public void addClassSchedule(ClassSchedule schedule) {
+        this.classSchedules.add(schedule);
+        schedule.getMembers().add(this);
+    }
+
+    public void removeClassSchedule(ClassSchedule schedule) {
+        this.classSchedules.remove(schedule);
+        schedule.getMembers().remove(this);
+    }
+
 }

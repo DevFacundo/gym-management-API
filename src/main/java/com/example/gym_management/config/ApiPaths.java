@@ -11,4 +11,5 @@ package com.example.gym_management.config;
         public static final String HEALTH_RECORD_BASE = URI_BASE_V1 + "/health-records";
         public static final String PATHOLOGY_BASE = URI_BASE_V1 + "/pathologies";
         public static final String PAYMENT_BASE = URI_BASE_V1 + "/payments";
+        public static final String WEIGHT_RECORD_BASE = URI_BASE_V1 + "/weight-records";
 }

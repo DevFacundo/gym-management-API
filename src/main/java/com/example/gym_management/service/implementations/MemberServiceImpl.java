@@ -72,134 +72,43 @@ public class MemberServiceImpl implements MemberService {
 
         healthRecord.setHeight(dto.healthRecord().height());
         healthRecord.setWeight(dto.healthRecord().weight());
-
-        if (dto.healthRecord().pathologyId() != null) {
-            healthRecord.getPathologies().clear();
-
-            for (Long pathologyId : dto.healthRecord().pathologyId()) {
-                Optional<Pathology> optional = pathologyRepository.findById(pathologyId);
-                if (optional.isPresent()) {
-                    healthRecord.getPathologies().add(optional.get());
-                }
-            }
-        }
     }
 
     private void updateClassSchedules(Member member, MemberRequestDto dto) {
         if (dto.classScheduleId() == null) return;
 
-        // 1. Convertimos lo que viene del Front a un Set de IDs
-        Set<Long> updatedIds = new HashSet<>(dto.classScheduleId());
+        Set<Long> newIds = new HashSet<>(dto.classScheduleId());
 
-        // 2. REGLA DE ORO: Solo borrar lo que ya no está en el DTO
-        // Esto evita el "delete all" innecesario que confunde a Hibernate
-        member.getClassSchedules().removeIf(existingSchedule -> {
-            if (!updatedIds.contains(existingSchedule.getId())) {
-                existingSchedule.getMembers().remove(member); // Limpieza bidireccional
+        // 1. Remover las que ya no están presentes en el DTO
+        // Usamos un Iterator o removeIf para evitar ConcurrentModificationException
+        member.getClassSchedules().removeIf(schedule -> {
+            if (!newIds.contains(schedule.getId())) {
+                schedule.getMembers().remove(member); // Sincronización manual inversa
                 return true;
             }
             return false;
         });
 
-        // 3. REGLA DE ORO: Solo agregar lo que el socio NO tenía ya
-        Set<Long> currentlyAssignedIds = member.getClassSchedules().stream()
+        // 2. Agregar las nuevas
+        Set<Long> currentIds = member.getClassSchedules().stream()
                 .map(ClassSchedule::getId)
                 .collect(Collectors.toSet());
 
-        for (Long newId : updatedIds) {
-            if (!currentlyAssignedIds.contains(newId)) {
-                classScheduleRepository.findById(newId).ifPresent(schedule -> {
-                    if (schedule.getMembers().size() < schedule.getMaxCapacity()) {
-                        member.getClassSchedules().add(schedule);
-                        schedule.getMembers().add(member);
-                    } else {
-                        throw new IllegalStateException("La clase de las " + schedule.getStartTime() + " está llena.");
-                    }
-                });
+        for (Long scheduleId : newIds) {
+            if (!currentIds.contains(scheduleId)) {
+                ClassSchedule schedule = classScheduleRepository.findById(scheduleId)
+                        .orElseThrow(() -> new EntityNotFoundException("Clase no encontrada: " + scheduleId));
+
+                // Validación de Regla de Negocio: Capacidad
+                if (schedule.getMembers().size() >= schedule.getMaxCapacity()) {
+                    throw new IllegalStateException("La clase de las " + schedule.getStartTime() + " está llena.");
+                }
+
+                member.addClassSchedule(schedule); // Uso del helper
             }
         }
     }
 
-//    private void updateClassSchedules(Member member, MemberRequestDto dto) {
-//        if (dto.classScheduleId() == null) return;
-//
-//        // 1. LIMPIEZA BIDIRECCIONAL (Fundamental para evitar los clones)
-//        // Antes de limpiar al socio, le avisamos a cada clase que el socio se va
-//        for (ClassSchedule currentSchedule : member.getClassSchedules()) {
-//            currentSchedule.getMembers().remove(member);
-//        }
-//
-//        // 2. Ahora sí limpiamos la lista del socio
-//        member.getClassSchedules().clear();
-//
-//        // 3. Agregamos las clases nuevas (o las que quedaron tildadas)
-//        for (Long scheduleId : dto.classScheduleId()) {
-//            classScheduleRepository.findById(scheduleId).ifPresent(schedule -> {
-//                // Sincronizamos ambos lados
-//                if (!member.getClassSchedules().contains(schedule)) {
-//                    if (schedule.getMembers().size() < schedule.getMaxCapacity()) {
-//                        member.getClassSchedules().add(schedule);
-//                        schedule.getMembers().add(member); // <--- Esto mantiene la DB sana
-//                    } else {
-//                        // Si ya estaba (update), no lanzamos error de capacidad
-//                        if (!schedule.getMembers().contains(member)) {
-//                            throw new IllegalStateException("Clase llena: " + schedule.getId());
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
-
-//    private void updateClassSchedules(Member member, MemberRequestDto dto) {
-//        if (dto.classScheduleId() == null) return;
-//
-//        // 1. ANTES DE LIMPIAR: Avisar a las clases actuales que esta alumna se va
-//        for (ClassSchedule currentSchedule : member.getClassSchedules()) {
-//            currentSchedule.getMembers().remove(member);
-//        }
-//
-//        // 2. Ahora sí limpiamos la lista de la alumna
-//        member.getClassSchedules().clear();
-//
-//        // 3. Agregamos las nuevas (o ninguna, si destildaste todo)
-//        for (Long scheduleId : dto.classScheduleId()) {
-//            classScheduleRepository.findById(scheduleId).ifPresent(schedule -> {
-//                // Validar capacidad
-//                if (schedule.getMembers().size() < schedule.getMaxCapacity()) {
-//                    member.getClassSchedules().add(schedule);
-//                    schedule.getMembers().add(member); // Sincronización bidireccional
-//                } else {
-//                    // Si ya estaba en la clase (por ejemplo en un update parcial), no lanzamos error
-//                    if (!schedule.getMembers().contains(member)) {
-//                        throw new IllegalStateException("La clase " + schedule.getId() + " está llena.");
-//                    }
-//                }
-//            });
-//        }
-//    }
-
-//    private void updateClassSchedules(Member member, MemberRequestDto dto) {
-//        if (dto.classScheduleId() == null) return;
-//
-//
-//        member.getClassSchedules().clear();
-//
-//        for (Long scheduleId : dto.classScheduleId()) {
-//            classScheduleRepository.findById(scheduleId).ifPresent(schedule -> {
-//                // not duplicated
-//                if (!member.getClassSchedules().contains(schedule)) {
-//                    // Valiate capacity
-//                    if (schedule.getMembers().size() < schedule.getMaxCapacity()) {
-//                        member.getClassSchedules().add(schedule);
-//                        schedule.getMembers().add(member);
-//                    } else {
-//                        throw new IllegalStateException("ClassSchedule is full: " + schedule.getId());
-//                    }
-//                }
-//            });
-//        }
-//    }
     @Override
     public void delete(Long id) {
         memberRepository.deleteById(id);

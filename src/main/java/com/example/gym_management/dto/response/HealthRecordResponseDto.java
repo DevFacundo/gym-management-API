@@ -6,6 +6,6 @@ public record HealthRecordResponseDto(
         Long id,
         Double height,
         Double weight,
-        List<PathologyResponseDto> pathologies
-) {
-}
+        List<PathologyResponseDto> pathologies,
+        List<WeightRecordResponseDto> weightRecords
+) {}

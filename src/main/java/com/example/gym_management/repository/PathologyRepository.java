@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface PathologyRepository extends JpaRepository<Pathology, Long> {
-    Optional<Pathology> findByNameIgnoreCase(String name);
-    Set<Pathology> findAllByIdIn(List<Long> ids);
+
+    List<Pathology> findByHealthRecordIdOrderByDateDesc(Long healthRecordId);
+    List<Pathology> findByHealthRecordIdAndActiveOrderByDateDesc(Long healthRecordId, Boolean active);
 }
